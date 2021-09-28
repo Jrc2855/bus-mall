@@ -12,7 +12,7 @@ function Product(name, url) {
   this.name = name,
   this.clicks = 0;
   this.timesShown = 0;
-  this.url = `Assets/images/${url}`;
+  this.url = `Assets/${url}`;
   allImages.push(this);
 }
 
@@ -22,16 +22,16 @@ let rightImageEl = document.getElementById('right-image');
 
 // Learned this from https://bost.ocks.org/mike/shuffle/
 // Randomizes Images
-function randomizeProducts() {
-  var x = allImages.length, y, z;
-  while(x) {
-    y = Math.floor(Math.random() * m--);
-    z = allImages[x];
-    allImages[x] = allImages[y];
-    allImages[y] = z;
-  }
-  return randomizeProducts();
-}
+// function randomizeProducts() {
+//   var x = allImages.length, y, z;
+//   while(x) {
+//     y = Math.floor(Math.random() * m--);
+//     z = allImages[x];
+//     allImages[x] = allImages[y];
+//     allImages[y] = z;
+//   }
+//   return randomizeProducts();
+// }
 
 // Renders Images
 Product.prototype.renderImage = function () {
@@ -53,6 +53,7 @@ function handleClick(event) {
     if (imageElement.name ===allImages[i].name) {
       allImages[i].click++;
       console.log(allImages[i]);
+      onclick
     }
   }
 }
@@ -60,24 +61,6 @@ function handleClick(event) {
 leftImageEl.addEventListener('click', handleClick);
 centerImageEl.addEventListener('click', handleClick);
 rightImageEl.addEventListener('click', handleClick);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -103,29 +86,29 @@ new Product('Soberiety Enforcer', 'wine-glass.jpg');
 
 console.log(allImages);
 
-// function renderImage() {
-//   let leftImageIndex = Math.floor(Math.random() * allImages.length);  
-//   let centerImageIndex = Math.floor(Math.random() * allImages.length);
-//   let rightImageIndex = Math.floor(Math.random() * allImages.length);
+function renderImage() {
+  let leftImageIndex = Math.floor(Math.random() * allImages.length);  
+  let centerImageIndex = Math.floor(Math.random() * allImages.length);
+  let rightImageIndex = Math.floor(Math.random() * allImages.length);
 
-//   //while (leftImageIndex === rightImageIndex) {
-//  //   rightImageIndex = Math.floor(Math.random() * allImages.length);  
-//  // }
+  //while (leftImageIndex === rightImageIndex) {
+ //   rightImageIndex = Math.floor(Math.random() * allImages.length);  
+ // }
 
-//   let left = allImages[leftImageIndex];
-//   let center = allImages[centerImageIndex];
-//   let right = allImages[rightImageIndex];
+  let left = allImages[leftImageIndex];
+  let center = allImages[centerImageIndex];
+  let right = allImages[rightImageIndex];
 
-//   leftImageEl.src = left.url;
-//   leftImageEl.name = left.name;
-//   left.timesShown ++;
-//   centerImageEl.src = center.url;
-//   centerImageEl.name = center.name;
-//   center.timesShown ++;
-//   rightImageEl.src = right.url;
-//   rightImageEl.name = right.name;
-//   right.timesShown ++;
-// }
+  leftImageEl.src = left.url;
+  leftImageEl.name = left.name;
+  left.timesShown ++;
+  centerImageEl.src = center.url;
+  centerImageEl.name = center.name;
+  center.timesShown ++;
+  rightImageEl.src = right.url;
+  rightImageEl.name = right.name;
+  right.timesShown ++;
+}
 
-// renderImage();
+renderImage();
 
