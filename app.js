@@ -59,20 +59,30 @@ gallery.addEventListener('click', handleClick);
 //-------------Event Handler-----------------// During Click Event increments total clicks & product clicks
 function handleClick(event) {
   event.preventDefault();
-  let imageElement = event.target;
   console.log(totalClicks++, event.target);
 
   for (let i = 0; i < allImages.length; i++) {
-    if (imageElement.name === allImages[i].name) {
-      allImages[i].clicks++;
-      totalClicks++
+    if (allImages[i].url === event.target.getAttribute('src')) {
+     allImages[i].clicks++;
       console.log(allImages[i]);
     }
   }
   renderProduct();
 
-  if(totalClicks == 25){
+  if(totalClicks === 25){
     gallery.removeEventListener('click', handleClick);
+    renderResults();
+  }
+}
+
+//---------------------Results-------------------//
+function renderResults() {
+  let resultsEl = document.getElementById("results");
+
+  for(let i = 0; i < allImages.length; i++) {
+    let results = document.createElement('li');
+    results.innerHTML = allImages[i].name + ' had ' + allImages[i].clicks + ' votes and was shown ' + allImages[i].timesShown + ' times.'
+    resultsEl.appendChild(results);
   }
 }
 
