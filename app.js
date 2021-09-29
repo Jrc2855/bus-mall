@@ -1,70 +1,114 @@
 'use strict'
 
 // Global variables go here
-let allImages = [];
-let totalClick = 0;
-let Gallery = document.getElementById('gallery')
+var allImages = [];
+var totalClicks = 0;
+var gallery = document.getElementById('gallery')
 
 
-// Constructor Function goes here
-
+//------------------Constructor Function----------------------// Shortcut for making Objects
 function Product(name, url) {
   this.name = name,
   this.clicks = 0;
   this.timesShown = 0;
   this.url = `Assets/${url}`;
   allImages.push(this);
-}
+};
 
-let leftImageEl = document.getElementById('left-image');
-let centerImageEl = document.getElementById('center-image');
-let rightImageEl = document.getElementById('right-image');
-
+//-----------Random Product Generator----------// Uses Fisher Yates Shuffle algorithm to swap image indexes.
 // Learned this from https://bost.ocks.org/mike/shuffle/
-// Randomizes Images
-// function randomizeProducts() {
-//   var x = allImages.length, y, z;
-//   while(x) {
-//     y = Math.floor(Math.random() * m--);
-//     z = allImages[x];
-//     allImages[x] = allImages[y];
-//     allImages[y] = z;
-//   }
-//   return randomizeProducts();
-// }
+function renderProduct() {
+  var x = allImages.length;
+  var y = 0;
+  var z;
+  while (x--) {
+    y = Math.floor(Math.random() * (x + 1));
+    z = allImages[x];
+    allImages[x] = allImages[y];
+    allImages[y] = z;
+  }
 
-// Renders Images
-Product.prototype.renderImage = function () {
-  let productList = document.createElement('li');
-  let productImage = document.createElement('img')
-  productList.src = this.url;
-  productList.appendChild(productImage);
-  Gallery.appendChild(productList);
-
-  this.clicks++;
+  let leftImage = allImages[0];
+  let centerImage = allImages[1];
+  let rightImage = allImages[2];
+  
+  gallery.innerHTML = '';
+  leftImage.imageDisplay();
+  centerImage.imageDisplay();
+  rightImage.imageDisplay();
 }
 
-// Click Handler
+//----------Product Image Display-------------// Creates HTML Elements and appends (connects) to Gallery
+Product.prototype.imageDisplay = function() {
+  let productList = document.createElement('li');
+  let productImage = document.createElement('img');
+
+  productImage.src = this.url;
+  productImage.id = this.name;
+
+  productList.appendChild(productImage);
+  gallery.appendChild(productList);
+
+  this.timesShown++;
+};
+
+//-------------Event Listener----------------// Prepares Gallery to listen for clicks
+gallery.addEventListener('click', handleClick);
+
+
+//-------------Event Handler-----------------// During Click Event increments total clicks & product clicks
 function handleClick(event) {
   event.preventDefault();
   let imageElement = event.target;
-  console.log(imageElement.name);
+  console.log(totalClicks++, event.target);
+
   for (let i = 0; i < allImages.length; i++) {
-    if (imageElement.name ===allImages[i].name) {
-      allImages[i].click++;
+    if (imageElement.name === allImages[i].name) {
+      allImages[i].clicks++;
+      totalClicks++
       console.log(allImages[i]);
-      onclick
     }
+  }
+  renderProduct();
+
+  if(totalClicks == 25){
+    gallery.removeEventListener('click', handleClick);
   }
 }
 
-leftImageEl.addEventListener('click', handleClick);
-centerImageEl.addEventListener('click', handleClick);
-rightImageEl.addEventListener('click', handleClick);
+//---------------------Chart--------------------// 
+function returnChart() {
+  let chartEl = document.getElementById("results-chart");
+  chartEl.innerHTML = '';
+
+  let ctx = chartEl.getContext('2d');
+  let labels = [];
+  let clicks = [];
+  for (let i =0; i < allImages.length; i++) {
+    labels.push(allImages[i].name);
+    clicks.push(allImages[i].clicks);
+  }
+  let resultsChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets:[{
+        label: '# of clicks',
+        data: clicks,
+      }],
+    },
+    options: {
+      scales:{
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+}
 
 
-
-// Products
+//----------------Products---------------------//
 new Product('Luggage', 'bag.jpg');
 new Product('Banana Slicer', 'banana.jpg');
 new Product('Toilet Paper', 'bathroom.jpg');
@@ -86,29 +130,6 @@ new Product('Soberiety Enforcer', 'wine-glass.jpg');
 
 console.log(allImages);
 
-function renderImage() {
-  let leftImageIndex = Math.floor(Math.random() * allImages.length);  
-  let centerImageIndex = Math.floor(Math.random() * allImages.length);
-  let rightImageIndex = Math.floor(Math.random() * allImages.length);
-
-  //while (leftImageIndex === rightImageIndex) {
- //   rightImageIndex = Math.floor(Math.random() * allImages.length);  
- // }
-
-  let left = allImages[leftImageIndex];
-  let center = allImages[centerImageIndex];
-  let right = allImages[rightImageIndex];
-
-  leftImageEl.src = left.url;
-  leftImageEl.name = left.name;
-  left.timesShown ++;
-  centerImageEl.src = center.url;
-  centerImageEl.name = center.name;
-  center.timesShown ++;
-  rightImageEl.src = right.url;
-  rightImageEl.name = right.name;
-  right.timesShown ++;
-}
-
-renderImage();
+renderProduct();
+returnChart();
 
