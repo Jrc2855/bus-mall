@@ -1,7 +1,7 @@
 'use strict'
 
 // Global variables go here
-var allImages = [];
+Product.allImages = [];
 var totalClicks = 0;
 var gallery = document.getElementById('gallery')
 
@@ -12,25 +12,25 @@ function Product(name, url) {
   this.clicks = 0;
   this.timesShown = 0;
   this.url = `Assets/${url}`;
-  allImages.push(this);
+  Product.allImages.push(this);
 };
 
 //-----------Random Product Generator----------// Uses Fisher Yates Shuffle algorithm to swap image indexes.
 // Learned this from https://bost.ocks.org/mike/shuffle/
 function renderProduct() {
-  var x = allImages.length;
+  var x = Product.allImages.length;
   var y = 0;
   var z;
   while (x--) {
     y = Math.floor(Math.random() * (x + 1));
-    z = allImages[x];
-    allImages[x] = allImages[y];
-    allImages[y] = z;
+    z = Product.allImages[x];
+    Product.allImages[x] = Product.allImages[y];
+    Product.allImages[y] = z;
   }
 
-  let leftImage = allImages[0];
-  let centerImage = allImages[1];
-  let rightImage = allImages[2];
+  let leftImage = Product.allImages[0];
+  let centerImage = Product.allImages[1];
+  let rightImage = Product.allImages[2];
   
   gallery.innerHTML = '';
   leftImage.imageDisplay();
@@ -61,10 +61,10 @@ function handleClick(event) {
   event.preventDefault();
   console.log(totalClicks++, event.target);
 
-  for (let i = 0; i < allImages.length; i++) {
-    if (allImages[i].url === event.target.getAttribute('src')) {
-     allImages[i].clicks++;
-      console.log(allImages[i]);
+  for (let i = 0; i < Product.allImages.length; i++) {
+    if (Product.allImages[i].url === event.target.getAttribute('src')) {
+      Product.allImages[i].clicks++;
+      console.log(Product.allImages[i]);
     }
   }
   renderProduct();
@@ -72,6 +72,7 @@ function handleClick(event) {
   if(totalClicks === 25){
     gallery.removeEventListener('click', handleClick);
     renderResults();
+    returnChart();
   }
 }
 
@@ -79,9 +80,9 @@ function handleClick(event) {
 function renderResults() {
   let resultsEl = document.getElementById("results");
 
-  for(let i = 0; i < allImages.length; i++) {
+  for(let i = 0; i < Product.allImages.length; i++) {
     let results = document.createElement('li');
-    results.innerHTML = allImages[i].name + ' had ' + allImages[i].clicks + ' votes and was shown ' + allImages[i].timesShown + ' times.'
+    results.innerHTML = Product.allImages[i].name + ' had ' + Product.allImages[i].clicks + ' votes and was shown ' + Product.allImages[i].timesShown + ' times.'
     resultsEl.appendChild(results);
   }
 }
@@ -91,20 +92,38 @@ function returnChart() {
   let chartEl = document.getElementById("results-chart");
   chartEl.innerHTML = '';
 
-  let ctx = chartEl.getContext('2d');
-  let labels = [];
-  let clicks = [];
-  for (let i =0; i < allImages.length; i++) {
-    labels.push(allImages[i].name);
-    clicks.push(allImages[i].clicks);
+// This variable productNames loops through the object names property to be able to supply it as a dataset.
+  let productNames = [];
+  for (let i = 0; i < Product.allImages.length; i++) {
+    productNames.push(Product.allImages[i].name);
   }
+// This variable productClicks loops through the object clicks property to be able to supply it as a dataset.
+  let productClicks = [];
+  for (let i = 0; i < Product.allImages.length; i++){
+    productClicks.push(Product.allImages[i].clicks);
+  }
+// This variable productAppearances loops through the object clicks property to be able to supply it as a dataset. 
+  let productAppearances = [];
+  for (let i = 0; i < Product.allImages.length; i++) {
+  productAppearances.push(Product.allImages[i].timesShown);
+  }
+  
+  let ctx = chartEl.getContext('2d');
+  for (let i = 0; i < Product.allImages.length; i++) {
+  }
+
   let resultsChart = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: labels,
+      labels: productNames,
       datasets:[{
-        label: '# of clicks',
-        data: clicks,
+        label: 'Tallies',
+        data: productClicks,
+        backgroundColor: 'red',
+      }, {
+        label: 'Appearances',
+        data: productAppearances,
+        backgroundColor: 'blue',
       }],
     },
     options: {
@@ -138,8 +157,8 @@ new Product('Stink Simulator', 'tauntaun.jpg');
 new Product('Infinite Water', 'water-can.jpg');
 new Product('Soberiety Enforcer', 'wine-glass.jpg');
 
-console.log(allImages);
+console.log(Product.allImages);
 
 renderProduct();
-returnChart();
+
 
