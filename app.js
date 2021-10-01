@@ -74,6 +74,10 @@ function handleClick(event) {
     renderResults();
     returnChart();
   }
+  //------Converts Objects or values into a string ----------//
+  let productStringify = JSON.stringify(Product.allImages);
+  localStorage.setItem('product', productStringify);
+
 }
 
 //---------------------Results-------------------//
@@ -107,7 +111,7 @@ function returnChart() {
   for (let i = 0; i < Product.allImages.length; i++) {
   productAppearances.push(Product.allImages[i].timesShown);
   }
-  
+
   let ctx = chartEl.getContext('2d');
   for (let i = 0; i < Product.allImages.length; i++) {
   }
@@ -134,31 +138,53 @@ function returnChart() {
       }
     }
   });
-}
+};
 
+//-------Converts a String into an Object or Value------//
+let productsLocal = localStorage.getItem('products');
+let productParse = JSON.parse(productsLocal);
+
+if(productParse !== null){
+  for (let i = 0; i < productParse.length; i++){
+    let revivedProduct = new Product(revivedProduct[i].name, revivedProduct[i].url);
+    revivedProduct.clicks = productParse[i].clicks;
+    revivedProduct.timesShown = productParse[i].timesShown;
+  }
+  renderResults();
+  displayChart();
+} else {
 
 //----------------Products---------------------//
-new Product('Luggage', 'bag.jpg');
-new Product('Banana Slicer', 'banana.jpg');
-new Product('Toilet Paper', 'bathroom.jpg');
-new Product('Tropical Rainboots', 'boots.jpg');
-new Product('Instant Breakfast', 'breakfast.jpg');
-new Product('Italian Gum', 'bubblegum.jpg');
-new Product('MIL Chair', 'chair.jpg');
-new Product('Godzilla Rival', 'cthulhu.jpg');
-new Product('Good Muzzle', 'dog-duck.jpg');
-new Product('Viking Breakfast', 'dragon.jpg');
-new Product('College Utensils', 'pen.jpg');
-new Product('Dusty Boots', 'pet-sweep.jpg');
-new Product('Italian Offense', 'scissors.jpg');
-new Product('Jaws Napsack', 'shark.jpg');
-new Product('Child Labor', 'sweep.png');
-new Product('Stink Simulator', 'tauntaun.jpg');
-new Product('Infinite Water', 'water-can.jpg');
-new Product('Soberiety Enforcer', 'wine-glass.jpg');
+  new Product('Luggage', 'bag.jpg');
+  new Product('Banana Slicer', 'banana.jpg');
+  new Product('Toilet Paper', 'bathroom.jpg');
+  new Product('Tropical Rainboots', 'boots.jpg');
+  new Product('Instant Breakfast', 'breakfast.jpg');
+  new Product('Italian Gum', 'bubblegum.jpg');
+  new Product('MIL Chair', 'chair.jpg');
+  new Product('Godzilla Rival', 'cthulhu.jpg');
+  new Product('Good Muzzle', 'dog-duck.jpg');
+  new Product('Viking Breakfast', 'dragon.jpg');
+  new Product('College Utensils', 'pen.jpg');
+  new Product('Dusty Boots', 'pet-sweep.jpg');
+  new Product('Italian Offense', 'scissors.jpg');
+  new Product('Jaws Napsack', 'shark.jpg');
+  new Product('Child Labor', 'sweep.png');
+  new Product('Stink Simulator', 'tauntaun.jpg');
+  new Product('Infinite Water', 'water-can.jpg');
+  new Product('Soberiety Enforcer', 'wine-glass.jpg');
+}
 
 console.log(Product.allImages);
 
 renderProduct();
 
 
+
+//-------------------References-------------------//
+
+"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify"
+
+//----------Helped me understand stringify and parse. I was really confused while reading this for the first time but I took some notes and read through these articles a few times.--//
+
+"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse"
